@@ -1,0 +1,43 @@
+spring:
+    profiles:
+        active: #env#
+    autoconfigure:
+        #因为多redis数据源, 排除掉springBoot自动装配redisTemplate
+        exclude:
+          - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+          - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+notification:
+    dingtalk:
+        # 群机器人url
+        url: https://oapi.dingtalk.com/robot/send?access_token=185d523a8527280a24936cd2cc716c980a793d7ac2c75b7dc2a907332test
+    mail:
+        # 发送邮件地址
+        sendAddress: test@sina.com
+        # 发送邮件账号
+        sendAccount: test@sina.com
+        # 发送邮件密码（授权码）
+        sendPassword: 75470cca2d1ctest
+        # 收件人地址多个用,分隔
+        recipientAddress: 123321123@qq.com,test@163.com
+        # 传输协议,默认SMTP
+        protocol: smtp
+        # 协议服务器地址
+        host: smtp.sina.com
+
+    #提醒渠道 0:不提醒, 1:钉钉, 2:邮件 9:所有
+    channel: 0
+
+#错误重试
+retry:
+  #是否错误重试
+  #如果方法和类上没增加@RetryConut注解，则取该配置
+  #优先级：
+  #      1.取方法@RetryConut重试次数
+  #      2.取类上@RetryConut重试次数
+  #      3.取该配置
+  retryable: false
+  #重试次数
+  count: 1
+
+

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOG_HOME" value="./log"/>
+    <property name="printPattern" value="%date [%thread] %highlight(%-5level) %cyan(%logger{50}) - %msg%n" />
+    <property name="outPutPattern" value="%date [%thread] %-5level %logger{80} - %msg%n" />
+    <!-- 控制台输出 -->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+            <pattern>${printPattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <!-- info输出 -->
+    <appender name="info-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--atf auto test framework-->
+        <File>${LOG_HOME}/api-test-info.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_HOME}/api-test.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+            <maxHistory>30</maxHistory><!--文件保留30天-->
+            <totalSizeCap>3GB</totalSizeCap><!--日志所有文件总大小为3GB-->
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>${outPutPattern}</Pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+    </appender>
+    <!-- ERROR输出 -->
+    <appender name="error-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <File>${LOG_HOME}/api-test-error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_HOME}/api-test-error.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+            <maxHistory>30</maxHistory><!--文件保留30天-->
+            <totalSizeCap>3GB</totalSizeCap><!--日志所有文件总大小为3GB-->
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>${outPutPattern}</Pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="info-file"/>
+        <appender-ref ref="error-file"/>
+        <appender-ref ref="stdout"/>
+    </root>
+
+    <logger name="com.zaxxer.hikari" level="OFF"></logger>
+</configuration>

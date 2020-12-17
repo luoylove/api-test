@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<!--tests级别：不同test tag下的用例可以在不同的线程执行，相同test tag下的用例只能在同一个线程中执行。-->
+<!--classs级别：不同class tag下的用例可以在不同的线程执行，相同class tag下的用例只能在同一个线程中执行。-->
+<!--methods级别：所有用例都可以在不同的线程去执行。-->
+<!--thread-count: 并发线程数-->
+<suite name="All Test Suite" parallel="tests" thread-count="2">
+    <test verbose="2"  name="test one">
+        <groups>
+            <!--groups分组-->
+            <define name="groups1">
+                <include name="test-groups-1" />
+            </define>
+            <run>
+                <include name="groups1" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.ly.example.TestExpressionOne" />
+        </classes>
+    </test>
+    <test verbose="2"  name="test two">
+        <groups>
+            <!--groups分组-->
+            <define name="groups1">
+                <include name="test-groups-1" />
+            </define>
+            <run>
+                <include name="groups1" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.ly.example.TestExpressionTwo" />
+        </classes>
+    </test>
+</suite>

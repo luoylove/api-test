@@ -1,0 +1,33 @@
+spring:
+    httpurl:
+        test.url: https://test-release.com.cn/test-api
+    datasource:
+        # 配置多数据源
+        qa:
+            driverClassName: com.mysql.cj.jdbc.Driver
+            jdbc-url: jdbc:mysql://xxxxxxxx?characterEncoding=utf-8
+            username: xx
+            password: xxxxxxxxxxx
+        uat:
+            driverClassName: com.mysql.cj.jdbc.Driver
+            jdbc-url: jdbc:mysql://xxxxxxxx?characterEncoding=utf-8
+            username: xx
+            password: xxxxxxxxxxx
+
+    redis:
+        # Redis服务器集群地址
+        cluster:
+            nodes: 127.0.0.1:6379,127.0.0.1:6380
+            timeout: 5000
+            password: 123
+        standalone:
+            # 连接那个数据库
+            database: 1
+            # Redis服务器ip
+            host: 127.0.0.1
+            # Redis服务器连接端口
+            port: 6379
+            # Redis服务器连接密码（默认为空）
+            password: 1234
+            # 连接超时时间（毫秒）
+            timeout: 5000

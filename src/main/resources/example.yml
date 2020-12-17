@@ -1,0 +1,66 @@
+testCase:
+-   name: GetSeriesGames
+    description: 查询系列游戏
+    type: json
+    url: /v5/GetSeriesGames
+    method: POST
+    setup:
+      - method: createTimestamp
+      - method: setUptest
+        args: ${request}
+    headers:
+    requests:
+        {
+            "deviceType":"iPhone12,1",
+            "deviceId":"7423619B-5E7C-46E9-A884-58F7ACDF4B3",
+            "os":"iOS",
+            "osVersion":"13.6",
+            "app":"GSApp(iOS)",
+            "appVersion":"5.12.3",
+            "request":{
+                "gameId":"343620",
+                "cacheMinutes":10
+            }
+        }
+    validate:
+        notNull: [result]
+        eq: [errorCode: 0]
+    teardown:
+      - method: teardowm
+        args: args1111, args222
+
+
+-   name: login-not-found
+    description: 用户名不存在
+    type: json
+    url: /v2/TwoLogin
+    method: POST
+    headers:
+    requests:
+      {
+          "deviceType":"iPhone12,1",
+          "deviceId":"7423619B-5E7C-46E9-A884-58F7ACDF4B3",
+          "os":"iOS",
+          "osVersion":"13.6",
+          "app":"GSApp(iOS)",
+          "appVersion":"5.12.3",
+          "request":{
+              "userInfo":"13000000001",
+              "passWord":"aaaaa",
+              "veriCode": ""
+          }
+      }
+    validate:
+        eq: ["errorCode": 2]
+    parameters:
+      - name: login-passWord-is-null
+        description: 密码不能为空
+        requests:
+          "request":
+            {
+                "userInfo":"13000000001",
+                "passWord":"",
+                "veriCode": ""
+            }
+        validate:
+          eq: ["errorCode": 2]

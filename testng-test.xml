@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<!--tests级别：不同test tag下的用例可以在不同的线程执行，相同test tag下的用例只能在同一个线程中执行。-->
+<!--classs级别：不同class tag下的用例可以在不同的线程执行，相同class tag下的用例只能在同一个线程中执行。-->
+<!--methods级别：所有用例都可以在不同的线程去执行。-->
+<!--thread-count: 并发线程数-->
+<suite name="自动化">
+    <test verbose="5" name="example" >
+        <groups>
+            <!--groups分组-->
+            <define name="test">
+                <include name="example" />
+            </define>
+
+            <!--运行的groups-->
+            <run>
+                <include name="test" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.ly.testcase.ExampleApiTestCase" />
+        </classes>
+    </test>
+</suite>
