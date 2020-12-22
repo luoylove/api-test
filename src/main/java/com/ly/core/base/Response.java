@@ -66,7 +66,7 @@ public class Response implements ValidateResponseOptions<Response>, SaveDataResp
         }
         try {
             assuredResponse.then().statusCode(code);
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             this.ex = new AssertionException(ex.getMessage(), ex.getCause());
         }
         return this;
@@ -79,7 +79,7 @@ public class Response implements ValidateResponseOptions<Response>, SaveDataResp
         }
         try {
             assuredResponse.then().body(path, matcher);
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             this.ex = new AssertionException(ex.getMessage(), ex.getCause());
         }
         return this;
@@ -241,6 +241,7 @@ public class Response implements ValidateResponseOptions<Response>, SaveDataResp
                 onFailure(declaredConstructor.newInstance(args));
             }
         } catch (Exception e) {
+            log.error("Response.onFailure: " , e);
             e.printStackTrace();
         }
         return this;
@@ -256,6 +257,7 @@ public class Response implements ValidateResponseOptions<Response>, SaveDataResp
                 onFailure(t, declaredConstructor.newInstance(args));
             }
         } catch (Exception e) {
+            log.error("Response.onFailure: " , e);
             e.printStackTrace();
         }
         return this;
@@ -271,6 +273,7 @@ public class Response implements ValidateResponseOptions<Response>, SaveDataResp
                 onFailureByExpr(expressions, declaredConstructor.newInstance(args));
             }
         } catch (Exception e) {
+            log.error("Response.onFailure: " , e);
             e.printStackTrace();
         }
         return this;
@@ -414,6 +417,7 @@ public class Response implements ValidateResponseOptions<Response>, SaveDataResp
                 processor(declaredConstructor.newInstance(args));
             }
         } catch (Exception e) {
+            log.error("Response.processor: " , e);
             e.printStackTrace();
         }
         return this;
@@ -429,6 +433,7 @@ public class Response implements ValidateResponseOptions<Response>, SaveDataResp
                 processor(t, declaredConstructor.newInstance(args));
             }
         } catch (Exception e) {
+            log.error("Response.processor: " , e);
             e.printStackTrace();
         }
         return this;
@@ -444,6 +449,7 @@ public class Response implements ValidateResponseOptions<Response>, SaveDataResp
                 processorByExpr(expressions, declaredConstructor.newInstance(args));
             }
         } catch (Exception e) {
+            log.error("Response.processor: " , e);
             e.printStackTrace();
         }
         return this;

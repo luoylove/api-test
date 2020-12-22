@@ -2,7 +2,8 @@ package com.ly.core.listener;
 
 import com.google.common.collect.Lists;
 import com.ly.core.annotation.TestSetup;
-import com.ly.core.notification.HandlerNotificationContext;
+import com.ly.core.notification.NotificationContextHandler;
+import com.ly.core.notification.NotificationHandler;
 import com.ly.core.utils.ResourcesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.ITestContext;
@@ -44,16 +45,16 @@ public class LifeCycleListenerProcessorUtil {
     public LifeCycleListenerProcessorUtil notificationOnFinish() {
         String channel = ResourcesUtil.getProp("notification.channel");
 
-        HandlerNotificationContext handlerContext = new HandlerNotificationContext();
+        NotificationContextHandler handlerContext = new NotificationContextHandler();
 
-        if (HandlerNotificationContext.Channel.No.getType().equals(channel)) {
+        if (NotificationContextHandler.Channel.No.getType().equals(channel)) {
             log.info("不进行通知");
-        } else if (HandlerNotificationContext.Channel.ALL.getType().equals(channel)) {
+        } else if (NotificationContextHandler.Channel.ALL.getType().equals(channel)) {
             log.info("全渠道通知");
-            handlerContext.getInstanceAll().forEach(h -> h.notification());
+            handlerContext.getInstanceAll().forEach(NotificationHandler::notification);
         } else {
             log.info("单渠道通知:{}", channel);
-            handlerContext.getInstance(channel);
+            handlerContext.getInstance(channel).notification();
         }
         return this;
     }

@@ -1,7 +1,7 @@
 package com.ly.core.notification;
 
 /**
- * @Author: luoy
+ * @Author: luoyoujun
  * @Date: 2019/9/16 13:25.
  */
 public interface BaseNotificationServer {

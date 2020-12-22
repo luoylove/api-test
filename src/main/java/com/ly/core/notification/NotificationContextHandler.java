@@ -7,28 +7,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HandlerNotificationContext {
+public class NotificationContextHandler {
     private static Map<String, Class> handlerMap = new HashMap<>();
 
     static{
-        handlerMap.put(Channel.DingTalk.getType(), DingTalkHanderNotification.class);
-        handlerMap.put(Channel.Mail.getType(), MailHanderNotification.class);
+        handlerMap.put(Channel.DingTalk.getType(), DingTalkNotificationHandler.class);
+        handlerMap.put(Channel.Mail.getType(), MailNotificationHandler.class);
     }
 
-    public HandlerNotification getInstance(String type) {
+    public NotificationHandler getInstance(String type) {
         Class clazz = handlerMap.get(type);
 
         if (clazz == null) {
             throw new IllegalArgumentException("not found handler for type:" + type);
         }
 
-        return SpringContextUtil.getBean((Class<HandlerNotification>) clazz);
+        return SpringContextUtil.getBean((Class<NotificationHandler>) clazz);
     }
 
-    public List<HandlerNotification> getInstanceAll() {
-        List<HandlerNotification> handlers = Lists.newArrayList();
+    public List<NotificationHandler> getInstanceAll() {
+        List<NotificationHandler> handlers = Lists.newArrayList();
 
-        handlerMap.forEach((k,v) -> handlers.add(SpringContextUtil.getBean((Class<HandlerNotification>) v)));
+        handlerMap.forEach((k,v) -> handlers.add(SpringContextUtil.getBean((Class<NotificationHandler>) v)));
 
         return handlers;
     }

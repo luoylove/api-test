@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * @Author: luoy
+ * @Author: luoyoujun
  * @Date: 2019/9/16 15:04.
  */
 @Service
-public class DingTalkHanderNotification extends HandlerNotification{
+public class DingTalkNotificationHandler extends NotificationHandler{
     @Autowired
     private DingTalkNotificationSererImpl dingTalkNotificationSererImpl;
 

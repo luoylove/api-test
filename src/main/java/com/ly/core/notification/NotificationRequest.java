@@ -1,7 +1,7 @@
 package com.ly.core.notification;
 
 /**
- * @Author: luoy
+ * @Author: luoyoujun
  * @Date: 2019/9/16 13:26.
  */
 public class NotificationRequest {

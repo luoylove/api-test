@@ -1,9 +1,9 @@
 package com.ly.core.notification;
 
 /**
- * @Author: luoy
+ * @Author: luoyoujun
  * @Date: 2019/9/16 14:58.
  */
-public abstract class HandlerNotification {
+public abstract class NotificationHandler {
     public abstract void notification();
 }
