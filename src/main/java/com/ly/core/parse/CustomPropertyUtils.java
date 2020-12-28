@@ -75,7 +75,7 @@ public class CustomPropertyUtils extends PropertyUtils {
                     PropertyDescriptor[] propertys = Introspector.getBeanInfo(type)
                             .getPropertyDescriptors();
                     if (type == TestCase.class) {
-                        PropertyDescriptor[] propertysSort = new PropertyDescriptor[8];
+                        PropertyDescriptor[] propertysSort = new PropertyDescriptor[9];
                         for(PropertyDescriptor p : propertys) {
                             if ("name".equals(p.getName())) {
                                 propertysSort[0] = p;
@@ -98,8 +98,11 @@ public class CustomPropertyUtils extends PropertyUtils {
                             if ("requests".equals(p.getName())) {
                                 propertysSort[6] = p;
                             }
-                            if ("validate".equals(p.getName())) {
+                            if ("requestsList".equals(p.getName())) {
                                 propertysSort[7] = p;
+                            }
+                            if ("validate".equals(p.getName())) {
+                                propertysSort[8] = p;
                             }
                         }
                         propertys = propertysSort;

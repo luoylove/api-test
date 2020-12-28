@@ -1,13 +1,11 @@
-package com.ly.core.utils;
+package com.ly.core.parse;
 
 import com.ly.core.enums.HttpType;
 import com.ly.core.enums.MatchesEnum;
 import com.ly.core.enums.ModelType;
 import com.ly.core.exception.BizException;
-import com.ly.core.parse.CustomPropertyUtils;
-import com.ly.core.parse.DataEntity;
-import com.ly.core.parse.JsonPath;
-import com.ly.core.parse.TestCase;
+import com.ly.core.utils.JSONSerializerUtil;
+import com.ly.core.utils.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Lists;
 import org.testng.collections.Maps;

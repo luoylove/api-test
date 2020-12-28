@@ -21,6 +21,7 @@
         <allure.version>2.13.2</allure.version>
         <aspectj.version>1.9.5</aspectj.version>
         <rest-assured.version>4.0.0</rest-assured.version>
+        <swagger.parser.version>1.0.51</swagger.parser.version>
         <java.version>1.8</java.version>
         <testng.xmlFilePath>testng.xml</testng.xmlFilePath>
         <testng.groups></testng.groups>
@@ -172,6 +173,14 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.70</version>
         </dependency>
+
+        <!-- swagger2 解析 -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-parser</artifactId>
+            <version>${swagger.parser.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>io.rest-assured</groupId>

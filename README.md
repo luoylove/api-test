@@ -303,10 +303,10 @@ application-qa.yml,application-uat.yml 区分环境配置文件,最终会根据�
 
 - 提供com.ly.core.actuator.TestNgRun 编码方式运行
 
-- 提供一个har格式转换为yaml用例数据(charles导出.har文件转换为yaml格式)
+- 提供har与swagger格式转换为yaml用例数据(charles导出.har文件转换为yaml格式)
 
   ```
-  com.ly.core.utils.Har2Yaml.toYaml("D:\\har\\workstatus.har");
+  com.ly.core.Utils.Source2Yaml
   ```
 
 - redis
