@@ -186,7 +186,11 @@ public class DataProviderUtils {
                     recursionSetValue(testCaseTmp.getRequests(), parameter.getRequests());
                 }
             }
-            //如果parameters节点没有填写validate, 取父case的validate
+
+            if (parameter.getRequestsList() != null && parameter.getRequestsList().size() > 0) {
+                testCaseTmp.setRequestsList(parameter.getRequestsList());
+            }
+
             if (parameter.getValidate() != null && parameter.getValidate().size() > 0) {
                 testCaseTmp.setValidate(parameter.getValidate());
             }

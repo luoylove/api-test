@@ -69,7 +69,7 @@ public class AllureSetStepHttpPostProcessor extends TestNgLifeCyclePostProcessor
     }
 
     private String getUrlPath(String url) {
-        if (!url.contains("http")) {
+        if (!url.trim().toLowerCase().startsWith("http")) {
             return url;
         }
         try {

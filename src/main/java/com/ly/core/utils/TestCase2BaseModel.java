@@ -14,13 +14,20 @@ import com.ly.core.parse.XmlModel;
 public class TestCase2BaseModel {
 
     public static JsonModel toJsonModel(TestCase testCase) {
+        String jsonData = null;
+        if(testCase.getRequestsList() != null && testCase.getRequestsList().size() > 0) {
+            jsonData = JSONSerializerUtil.serialize(testCase.getRequestsList());
+        }
+        if(testCase.getRequests() != null && testCase.getRequests().size() > 0) {
+            jsonData = JSONSerializerUtil.serialize(testCase.getRequests());
+        }
         return JSONSerializerUtil.copy(JsonModel.builder()
                 .headers(testCase.getHeaders())
                 .name(testCase.getName())
                 .url(testCase.getUrl())
                 .description(testCase.getDescription())
                 .method(testCase.getMethod())
-                .jsonData(JSONSerializerUtil.serialize(testCase.getRequests()))
+                .jsonData(jsonData)
                 .validate(testCase.getValidate())
                 .setup(testCase.getSetup())
                 .saveMethod(testCase.getSaveMethod())
