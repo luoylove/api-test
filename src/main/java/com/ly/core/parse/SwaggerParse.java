@@ -185,7 +185,6 @@ public class SwaggerParse {
                     validate.put(MatchesEnum.LEN.getType(), len);
                 } else {
                     // 如果其他类型默认不断言
-                    return;
                 }
                 testCase.setValidate(validate);
             });
@@ -202,19 +201,19 @@ public class SwaggerParse {
 
     private void buildQuery(Parameter parameter, TestCase testCase){
         QueryParameter queryParameter = (QueryParameter) parameter;
-        Map<String, Object> requests = testCase.getRequests();
+        Map<String, Object> requests = (Map<String, Object>) testCase.getRequests();
         requests.put(parameter.getName(), Optional.ofNullable(queryParameter.getDefaultValue()).orElse(queryParameter.getDescription() + "-" + queryParameter.getType()));
     }
 
     private void buildFormData(Parameter parameter, TestCase testCase){
         FormParameter formParameter = (FormParameter) parameter;
-        Map<String, Object> requests = testCase.getRequests();
+        Map<String, Object> requests = (Map<String, Object>) testCase.getRequests();
         requests.put(formParameter.getName(), Optional.ofNullable(formParameter.getDefaultValue()).orElse(formParameter.getDescription() + "-" + formParameter.getType()));
     }
 
     private void buildPath(Parameter parameter, TestCase testCase){
         PathParameter pathParameter = (PathParameter) parameter;
-        Map<String, Object> requests = testCase.getRequests();
+        Map<String, Object> requests = (Map<String, Object>) testCase.getRequests();
         requests.put(pathParameter.getName(), Optional.ofNullable(pathParameter.getDefaultValue()).orElse(pathParameter.getDescription() + "-" + pathParameter.getType()));
     }
 
@@ -259,11 +258,7 @@ public class SwaggerParse {
                 //TODO ObjectProperty ?
                 requestsList.add(items.getDescription() + "-" + items.getType());
             }
-            //yml write skip null
-            if(testCase.getRequests().size() == 0) {
-                testCase.setRequests(null);
-            }
-            testCase.setRequestsList(requestsList);
+            testCase.setRequests(requestsList);
         }
     }
 
@@ -276,6 +271,9 @@ public class SwaggerParse {
         }
         if (ContentType.URLENC.matches(contentType)) {
             return ModelType.FORM.getType();
+        }
+        if (ContentType.TEXT.matches(contentType)) {
+            return ModelType.TEXT.getType();
         }
         return "";
     }

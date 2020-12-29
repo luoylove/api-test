@@ -8,8 +8,10 @@ import com.ly.core.base.BaseTestCase;
 import com.ly.core.enums.HttpType;
 import com.ly.core.exception.BizException;
 import com.ly.core.parse.BaseModel;
+import com.ly.core.parse.FormModel;
 import com.ly.core.parse.JsonModel;
 import com.ly.core.parse.MultipleModel;
+import com.ly.core.parse.TextModel;
 import com.ly.core.parse.XmlModel;
 import com.ly.core.restassured.RestassuredHttpHandleBuilder;
 import com.ly.core.support.HttpContext;
@@ -187,33 +189,39 @@ public class ProxySupport {
     }
 
     private Response doPost(BaseModel model) {
-        if (StringUtils.isNotBlank(params4String)) {
-            if (model instanceof XmlModel) {
-                return httpClient.post(model.getHeaders(), params4String, ContentType.XML, model.getUrl(), filters.toArray(new Filter[filters.size()]));
-            }
-
-            if (model instanceof JsonModel) {
-                return httpClient.post(model.getHeaders(), params4String, ContentType.JSON, model.getUrl(), filters.toArray(new Filter[filters.size()]));
-            }
-            throw new BizException("暂不支持model: " + model.getClass());
+        if (model instanceof XmlModel) {
+            return httpClient.post(model.getHeaders(), params4String, ContentType.XML, model.getUrl(), filters.toArray(new Filter[filters.size()]));
+        }
+        if (model instanceof TextModel) {
+            return httpClient.post(model.getHeaders(), params4String, ContentType.TEXT, model.getUrl(), filters.toArray(new Filter[filters.size()]));
         }
 
-        return httpClient.post(model.getHeaders(), params4Form, model.getUrl(), filters.toArray(new Filter[filters.size()]));
+        if (model instanceof JsonModel) {
+            return httpClient.post(model.getHeaders(), params4String, ContentType.JSON, model.getUrl(), filters.toArray(new Filter[filters.size()]));
+        }
+        if (model instanceof FormModel) {
+            return httpClient.post(model.getHeaders(), params4Form, model.getUrl(), filters.toArray(new Filter[filters.size()]));
+        }
+        throw new BizException("暂不支持model: " + model.getClass());
     }
 
     private Response doPut(BaseModel model) {
-        if (StringUtils.isNotBlank(params4String)) {
-            if (model instanceof XmlModel) {
-                return httpClient.put(model.getHeaders(), params4String, ContentType.XML, model.getUrl(), filters.toArray(new Filter[filters.size()]));
-            }
-
-            if (model instanceof JsonModel) {
-                return httpClient.put(model.getHeaders(), params4String, ContentType.JSON, model.getUrl(), filters.toArray(new Filter[filters.size()]));
-            }
-            throw new BizException("暂不支持model: " + model.getClass());
+        if (model instanceof XmlModel) {
+            return httpClient.put(model.getHeaders(), params4String, ContentType.XML, model.getUrl(), filters.toArray(new Filter[filters.size()]));
         }
 
-        return httpClient.put(model.getHeaders(), params4Form, model.getUrl(), filters.toArray(new Filter[filters.size()]));
+        if (model instanceof TextModel) {
+            return httpClient.put(model.getHeaders(), params4String, ContentType.TEXT, model.getUrl(), filters.toArray(new Filter[filters.size()]));
+        }
+
+        if (model instanceof JsonModel) {
+            return httpClient.put(model.getHeaders(), params4String, ContentType.JSON, model.getUrl(), filters.toArray(new Filter[filters.size()]));
+        }
+
+        if (model instanceof FormModel) {
+            return httpClient.put(model.getHeaders(), params4Form, model.getUrl(), filters.toArray(new Filter[filters.size()]));
+        }
+        throw new BizException("暂不支持model: " + model.getClass());
     }
 
     private Response doDelete(BaseModel model) {

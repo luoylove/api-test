@@ -89,7 +89,7 @@ public class RestassuredHttpHandleBuilder {
    * @return
    */
   public Response get(Map<String, ?> headers, Map<String, ?> parameters, String url,
-            int connectTimeout, int requestTimeout, int socketTimeout, boolean redirectsEnabled, Filter...filters) {
+                      int connectTimeout, int requestTimeout, int socketTimeout, boolean redirectsEnabled, Filter...filters) {
     config().httpClient(createConfig(connectTimeout, requestTimeout, socketTimeout, redirectsEnabled));
 
     RequestSpecification restHandle =  given();
@@ -157,10 +157,10 @@ public class RestassuredHttpHandleBuilder {
   }
 
   /**
-   *  put请求  json或者xml模式
+   *  put请求  json, xml, text模式
    * @param headers
    * @param data
-   * @param contentType  只支持ContentType.JSON, ContentType.XML
+   * @param contentType  只支持ContentType.JSON, ContentType.XML, ContentType.TEXT
    * @param url
    * @param connectTimeout
    * @param requestTimeout
@@ -170,11 +170,11 @@ public class RestassuredHttpHandleBuilder {
    * @return
    */
   public Response put(Map<String, ?> headers, String data, ContentType contentType, String url,
-            int connectTimeout, int requestTimeout, int socketTimeout, boolean redirectsEnabled, Filter...filters) {
+                      int connectTimeout, int requestTimeout, int socketTimeout, boolean redirectsEnabled, Filter...filters) {
     config().httpClient(createConfig(connectTimeout, requestTimeout, socketTimeout, redirectsEnabled));
 
-    if (contentType != ContentType.JSON && contentType != ContentType.XML) {
-      throw new BizException("content-type错误,只支持JSON,XML");
+    if (contentType != ContentType.JSON && contentType != ContentType.XML && contentType != ContentType.TEXT) {
+      throw new BizException("content-type错误,只支持JSON,XML,TEXT");
     }
 
     RequestSpecification restHandle =  given().contentType(contentType);
@@ -210,13 +210,13 @@ public class RestassuredHttpHandleBuilder {
    * @return
    */
   public Response put(Map<String, ?> headers, Map<String, ?> parameters, String contentType, String url,
-            int connectTimeout, int requestTimeout, int socketTimeout, boolean redirectsEnabled, Filter...filters) {
+                      int connectTimeout, int requestTimeout, int socketTimeout, boolean redirectsEnabled, Filter...filters) {
     config().httpClient(createConfig(connectTimeout, requestTimeout, socketTimeout, redirectsEnabled));
 
     RequestSpecification restHandle =  given();
     if (!StringUtils.isBlank(contentType)) {
       restHandle.config(config().encoderConfig(encoderConfig().defaultCharsetForContentType("UTF-8", ContentType.URLENC)))
-          .contentType(contentType);
+              .contentType(contentType);
       restHandle.contentType(contentType);
     } else {
       restHandle.config(config().encoderConfig(EncoderConfig.encoderConfig().defaultCharsetForContentType("UTF-8", ContentType.URLENC)));
@@ -264,11 +264,11 @@ public class RestassuredHttpHandleBuilder {
    * @return
    */
   public Response delete(Map<String, ?> headers, Map<String, ?> parameters, String url,
-               int connectTimeout, int requestTimeout, int socketTimeout, boolean redirectsEnabled, Filter...filters) {
+                         int connectTimeout, int requestTimeout, int socketTimeout, boolean redirectsEnabled, Filter...filters) {
     config().httpClient(createConfig(connectTimeout, requestTimeout, socketTimeout, redirectsEnabled));
 
     RequestSpecification restHandle =  given()
-        .config(config().encoderConfig(encoderConfig().defaultCharsetForContentType("UTF-8", ContentType.URLENC)));
+            .config(config().encoderConfig(encoderConfig().defaultCharsetForContentType("UTF-8", ContentType.URLENC)));
 
     if(headers != null ) {
       restHandle.headers(headers);
@@ -314,13 +314,13 @@ public class RestassuredHttpHandleBuilder {
    * @return
    */
   public Response post(Map<String, ?> headers, Map<String, ?> parameters, String contentType, String url,
-             int connectTimeout, int requestTimeout, int socketTimeout, boolean redirectsEnabled, Filter...filters) {
+                       int connectTimeout, int requestTimeout, int socketTimeout, boolean redirectsEnabled, Filter...filters) {
     config().httpClient(createConfig(connectTimeout, requestTimeout, socketTimeout, redirectsEnabled));
 
     RequestSpecification restHandle =  given();
     if (!StringUtils.isBlank(contentType)) {
       restHandle.config(config().encoderConfig(encoderConfig().defaultCharsetForContentType("UTF-8", ContentType.URLENC)))
-          .contentType(contentType);
+              .contentType(contentType);
     } else {
       restHandle.config(config().encoderConfig(EncoderConfig.encoderConfig().defaultCharsetForContentType("UTF-8", ContentType.URLENC)));
     }
@@ -351,10 +351,10 @@ public class RestassuredHttpHandleBuilder {
   }
 
   /**
-   * post请求 json或者xml模式
+   * post请求 json,xml,text模式
    * @param headers
    * @param data
-   * @param contentType 只支持ContentType.JSON, ContentType.XML
+   * @param contentType 只支持ContentType.JSON, ContentType.XML, ContentType.TEXT
    * @param url
    * @param filters
    * @return
@@ -376,18 +376,18 @@ public class RestassuredHttpHandleBuilder {
   }
 
   /**
-   * post请求，入参为json或者xml
+   * post请求，入参为json,xml,text
    * @param headers
    * @param data
    * @param url
    * @return
    */
   public Response post(Map<String, ?> headers, String data, ContentType contentType, String url, int connectTimeout, int requestTimeout, int socketTimeout,
-             boolean redirectsEnabled, Filter...filters) {
+                       boolean redirectsEnabled, Filter...filters) {
     config().httpClient(createConfig(connectTimeout, requestTimeout, socketTimeout, redirectsEnabled));
 
-    if (contentType != ContentType.JSON && contentType != ContentType.XML) {
-      throw new BizException("content-type错误,只支持JSON,XML");
+    if (contentType != ContentType.JSON && contentType != ContentType.XML && contentType != ContentType.TEXT ) {
+      throw new BizException("content-type错误,只支持JSON,XML,TEXT");
     }
 
     RequestSpecification restHandle =  given().contentType(contentType);
@@ -409,14 +409,14 @@ public class RestassuredHttpHandleBuilder {
 
   private HttpClientConfig createConfig(int connectTimeout, int requestTimeout, int socketTimeout, boolean redirectsEnabled) {
     RequestConfig requestConfig = RequestConfig.custom()
-        .setConnectTimeout(connectTimeout)
-        .setConnectionRequestTimeout(requestTimeout)
-        .setSocketTimeout(socketTimeout)
-        .setRedirectsEnabled(redirectsEnabled)
-        .build();
+            .setConnectTimeout(connectTimeout)
+            .setConnectionRequestTimeout(requestTimeout)
+            .setSocketTimeout(socketTimeout)
+            .setRedirectsEnabled(redirectsEnabled)
+            .build();
 
     return HttpClientConfig.httpClientConfig().httpClientFactory(() ->
-        HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build());
+            HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build());
   }
 
   /**
@@ -429,8 +429,8 @@ public class RestassuredHttpHandleBuilder {
     try {
       keyStore = KeyStore.getInstance("PKCS12");
       keyStore.load(
-          new FileInputStream(certPath),
-          password.toCharArray());
+              new FileInputStream(certPath),
+              password.toCharArray());
 
     } catch (Exception ex) {
       ex.printStackTrace();

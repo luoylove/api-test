@@ -72,43 +72,40 @@ public class CustomPropertyUtils extends PropertyUtils {
             default:
                 // add JavaBean properties
                 try {
-                    PropertyDescriptor[] propertys = Introspector.getBeanInfo(type)
+                    PropertyDescriptor[] currentProperties = Introspector.getBeanInfo(type)
                             .getPropertyDescriptors();
                     if (type == TestCase.class) {
-                        PropertyDescriptor[] propertysSort = new PropertyDescriptor[9];
-                        for(PropertyDescriptor p : propertys) {
+                        PropertyDescriptor[] propertiesSort = new PropertyDescriptor[8];
+                        for(PropertyDescriptor p : currentProperties) {
                             if ("name".equals(p.getName())) {
-                                propertysSort[0] = p;
+                                propertiesSort[0] = p;
                             }
                             if ("description".equals(p.getName())) {
-                                propertysSort[1] = p;
+                                propertiesSort[1] = p;
                             }
                             if ("type".equals(p.getName())) {
-                                propertysSort[2] = p;
+                                propertiesSort[2] = p;
                             }
                             if ("url".equals(p.getName())) {
-                                propertysSort[3] = p;
+                                propertiesSort[3] = p;
                             }
                             if ("method".equals(p.getName())) {
-                                propertysSort[4] = p;
+                                propertiesSort[4] = p;
                             }
                             if ("headers".equals(p.getName())) {
-                                propertysSort[5] = p;
+                                propertiesSort[5] = p;
                             }
                             if ("requests".equals(p.getName())) {
-                                propertysSort[6] = p;
-                            }
-                            if ("requestsList".equals(p.getName())) {
-                                propertysSort[7] = p;
+                                propertiesSort[6] = p;
                             }
                             if ("validate".equals(p.getName())) {
-                                propertysSort[8] = p;
+                                propertiesSort[7] = p;
                             }
                         }
-                        propertys = propertysSort;
+                        currentProperties = propertiesSort;
                     }
 
-                    for (PropertyDescriptor property : propertys) {
+                    for (PropertyDescriptor property : currentProperties) {
                         Method readMethod = property.getReadMethod();
                         if ((readMethod == null || !readMethod.getName().equals("getClass"))
                                 && !isTransient(property)) {

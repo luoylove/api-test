@@ -1,5 +1,6 @@
 package com.ly.core.parse;
 
+import com.google.common.base.Splitter;
 import com.ly.core.enums.HttpType;
 import com.ly.core.enums.MatchesEnum;
 import com.ly.core.enums.ModelType;
@@ -18,6 +19,7 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author: luoy
@@ -60,20 +62,20 @@ public class Har2Yaml {
 
             String url = getUrl(currentJsonPath);
 
-            String name = getName(currentJsonPath);
+            String httpMethod = getHttpMethod(currentJsonPath);
+
+            String name = getName(url, httpMethod);
 
             String type = getModelType(currentJsonPath);
 
             Map<String, Object> headers = getHeaders(currentJsonPath);
-
-            String httpMethod = getHttpMethod(currentJsonPath);
 
             Map<String, Object> requests = getRequests(currentJsonPath);
 
             Map<String, List<Object>> validate = getValidate(currentJsonPath);
 
             TestCase testCase = TestCase.builder().name(name).type(type).description(name).headers(headers)
-                            .url(url).method(httpMethod).requests(requests).validate(validate).build();
+                    .url(url).method(httpMethod).requests(requests).validate(validate).build();
             testCases.add(testCase);
         }
         dataEntity.setTestCase(testCases);
@@ -112,19 +114,29 @@ public class Har2Yaml {
         return headers;
     }
 
-    private static String getName(JsonPath jsonPath) {
-        //默认名字
-        String defaultName = "default-" + System.currentTimeMillis();
-        List<Map<String, String>> harHeaders = (List<Map<String, String>>) jsonPath.get("request.headers");
-        if (harHeaders == null && harHeaders.isEmpty()) {
-            return defaultName;
+    /** swagger style name */
+    private static String getName(String url, String method) {
+        String name = "%sUsing" + method.toUpperCase();
+        if (StringUtils.isNotBlank(url)) {
+            List<String> list = Splitter.on("/").splitToList(url).stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
+            if (list.size() == 0) {
+                return String.format(name, url);
+            } else if (list.size() == 1){
+                return String.format(name, list.get(list.size() - 1));
+            } else {
+                if (list.get(list.size() - 1).length() <= 2) {
+                    String firstName = list.get(list.size() - 2);
+                    String lastName = list.get(list.size() - 1);
+                    String lastNameHeader = lastName.substring(0, 1);
+                    String lastNameBody = lastName.substring(1);
+                    String preName = firstName + lastNameHeader.toUpperCase() + lastNameBody.toLowerCase();
+                    return String.format(name, preName);
+                } else {
+                    return String.format(name, list.get(list.size() - 1));
+                }
+            }
         }
-        String name = harHeaders.stream().filter(map -> map.get("name").equals(":path")).map(map -> map.get("value"))
-                .findAny().orElse(defaultName);
-
-        name = name.contains("?") ? name.substring(0, name.indexOf("?")) : name;
-
-        return name;
+        return "";
     }
 
     private static Map<String ,Object> getRequests(JsonPath jsonPath) {
@@ -221,10 +233,6 @@ public class Har2Yaml {
     }
 
     private static String responseDecode(String encode) {
-       return new String(Base64.getDecoder().decode(encode));
-    }
-
-    public static void main(String[] args) {
-        Har2Yaml.toYaml("D:\\har\\test.har");
+        return new String(Base64.getDecoder().decode(encode));
     }
 }

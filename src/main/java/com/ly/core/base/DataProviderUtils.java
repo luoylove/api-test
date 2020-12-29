@@ -12,6 +12,7 @@ import com.ly.core.parse.FormModel;
 import com.ly.core.parse.JsonModel;
 import com.ly.core.parse.MultipleModel;
 import com.ly.core.parse.TestCase;
+import com.ly.core.parse.TextModel;
 import com.ly.core.parse.XmlModel;
 import com.ly.core.parse.YmlParse;
 import com.ly.core.utils.AssertUtils;
@@ -94,21 +95,35 @@ public class DataProviderUtils {
             BaseModel[][] baseModels = new BaseModel[testCasesByParameters.size()][];
             for (int i = 0; i < baseModels.length; i++) {
                 String type = testCasesByParameters.get(i).getType();
-                if (ModelType.FORM.getType().equals(type)) {
-                    FormModel[] formModelsRow = new FormModel[1];
-                    FormModel formModel = TestCase2BaseModel.toFormModel(testCasesByParameters.get(i));
-                    formModelsRow[0] = formModel;
-                    baseModels[i] = formModelsRow;
-                } else if(ModelType.JSON.getType().equals(type)){
-                    JsonModel[] jsonModelsRow = new JsonModel[1];
-                    JsonModel jsonModel = TestCase2BaseModel.toJsonModel(testCasesByParameters.get(i));
-                    jsonModelsRow[0] = jsonModel;
-                    baseModels[i] = jsonModelsRow;
-                } else {
-                    XmlModel[] xmlModelsRow = new XmlModel[1];
-                    XmlModel xmlModel = TestCase2BaseModel.toXmlModel(testCasesByParameters.get(i));
-                    xmlModelsRow[0] = xmlModel;
-                    baseModels[i] = xmlModelsRow;
+                ModelType ymlType = ModelType.get(type);
+                AssertUtils.notNull(ymlType, "type类型错误: %s", type);
+                switch (ymlType) {
+                    case FORM:
+                        FormModel[] formModelsRow = new FormModel[1];
+                        FormModel formModel = TestCase2BaseModel.toFormModel(testCasesByParameters.get(i));
+                        formModelsRow[0] = formModel;
+                        baseModels[i] = formModelsRow;
+                        break;
+                    case JSON:
+                        JsonModel[] jsonModelsRow = new JsonModel[1];
+                        JsonModel jsonModel = TestCase2BaseModel.toJsonModel(testCasesByParameters.get(i));
+                        jsonModelsRow[0] = jsonModel;
+                        baseModels[i] = jsonModelsRow;
+                        break;
+                    case XML:
+                        XmlModel[] xmlModelsRow = new XmlModel[1];
+                        XmlModel xmlModel = TestCase2BaseModel.toXmlModel(testCasesByParameters.get(i));
+                        xmlModelsRow[0] = xmlModel;
+                        baseModels[i] = xmlModelsRow;
+                        break;
+                    case TEXT:
+                        TextModel[] textModelsRow = new TextModel[1];
+                        TextModel textModel = TestCase2BaseModel.toTextModel(testCasesByParameters.get(i));
+                        textModelsRow[0] = textModel;
+                        baseModels[i] = textModelsRow;
+                        break;
+                    default:
+                        break;
                 }
             }
             return baseModels;
@@ -132,15 +147,27 @@ public class DataProviderUtils {
             });
 
             Stream.concat(testCases.stream(), testCasesByParameters.stream()).forEach(testCase -> {
-                if (ModelType.FORM.getType().equals(testCase.getType())) {
-                    FormModel formModel = TestCase2BaseModel.toFormModel(testCase);
-                    data.put(testCase.getName(), formModel);
-                } else if (ModelType.JSON.getType().equals(testCase.getType())) {
-                    JsonModel jsonModel = TestCase2BaseModel.toJsonModel(testCase);
-                    data.put(testCase.getName(), jsonModel);
-                } else {
-                    XmlModel xmlModel = TestCase2BaseModel.toXmlModel(testCase);
-                    data.put(testCase.getName(), xmlModel);
+                ModelType ymlType = ModelType.get(testCase.getType());
+                AssertUtils.notNull(ymlType, "type类型错误: %s", testCase.getType());
+                switch (ymlType) {
+                    case FORM:
+                        FormModel formModel = TestCase2BaseModel.toFormModel(testCase);
+                        data.put(testCase.getName(), formModel);
+                        break;
+                    case JSON:
+                        JsonModel jsonModel = TestCase2BaseModel.toJsonModel(testCase);
+                        data.put(testCase.getName(), jsonModel);
+                        break;
+                    case XML:
+                        XmlModel xmlModel = TestCase2BaseModel.toXmlModel(testCase);
+                        data.put(testCase.getName(), xmlModel);
+                        break;
+                    case TEXT:
+                        TextModel textModel = TestCase2BaseModel.toTextModel(testCase);
+                        data.put(testCase.getName(), textModel);
+                        break;
+                    default:
+                        break;
                 }
             });
 
@@ -172,6 +199,7 @@ public class DataProviderUtils {
         //parameters中的所有testCase加入, 总执行次数testCase.getParameters().size()
         testCase.getParameters().forEach(parameter -> {
             TestCase testCaseTmp = JSONSerializerUtil.copy(testCase, TestCase.class);
+            // parameter中的headers与requests节点是会进行递归补全的,requestsList直接取,不进行补全
             if (parameter.getHeaders() != null && parameter.getHeaders().size() > 0) {
                 if (testCaseTmp.getHeaders() == null) {
                     testCaseTmp.setHeaders(parameter.getHeaders());
@@ -179,16 +207,26 @@ public class DataProviderUtils {
                     recursionSetValue(testCaseTmp.getHeaders(), parameter.getHeaders());
                 }
             }
-            if (parameter.getRequests() != null && parameter.getRequests().size() > 0) {
+            if (parameter.getRequests() != null) {
                 if (testCaseTmp.getRequests() == null) {
                     testCaseTmp.setRequests(parameter.getRequests());
+                } else if (parameter.getRequests() instanceof Map && testCaseTmp.getRequests() instanceof Map) {
+                    // map类型 递归替换的
+                    recursionSetValue((Map<String, Object>) testCaseTmp.getRequests(), (Map<String, Object>) parameter.getRequests());
+                } else if (parameter.getRequests() instanceof List && testCaseTmp.getRequests() instanceof List) {
+                    //list类型 无法获取list下标,只能全部替换
+                    testCaseTmp.setRequests(parameter.getRequests());
+                } else if (parameter.getRequests() instanceof String && testCaseTmp.getRequests() instanceof String) {
+                    //String类型直接替换
+                    testCaseTmp.setRequests(parameter.getRequests());
                 } else {
-                    recursionSetValue(testCaseTmp.getRequests(), parameter.getRequests());
+                    throw new BizException("parameters.requests解析失败,请检查parameters.requests节点数据类型");
                 }
+
             }
 
-            if (parameter.getRequestsList() != null && parameter.getRequestsList().size() > 0) {
-                testCaseTmp.setRequestsList(parameter.getRequestsList());
+            if (parameter.getValidate() != null && parameter.getValidate().size() > 0) {
+                testCaseTmp.setValidate(parameter.getValidate());
             }
 
             if (parameter.getValidate() != null && parameter.getValidate().size() > 0) {
@@ -214,7 +252,7 @@ public class DataProviderUtils {
     }
 
     private static void recursionSetValue(Map<String, Object> originalMap, Map<String, Object> increasedMap) {
-        increasedMap.forEach( (k, v) -> {
+        increasedMap.forEach((k, v) -> {
             originalMap.putIfAbsent(k, v);
             if (originalMap.containsKey(k)) {
                 if (originalMap.get(k) instanceof Map && v instanceof Map) {
